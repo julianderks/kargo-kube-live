@@ -6,7 +6,7 @@ metadata:
 spec:
   vars:
     - name: repoURL
-      value: https://github.com/julianderks/kargo-poc.git
+      value: https://github.com/julianderks/kargo-poc-app-kube-live.git
     - name: branch
       value: main
     - name: image
