@@ -1,0 +1,91 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: dev-facturatieservice
+  namespace: kargo-promotion
+  annotations:
+    kargo.akuity.io/color: red
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: facturatieservice
+      sources:
+        direct: true
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: promote
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: tst-facturatieservice
+  namespace: kargo-promotion
+  annotations:
+    kargo.akuity.io/color: amber
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: facturatieservice
+      sources:
+        stages:
+          - dev-facturatieservice
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: promote
+          vars:
+            - name: openpr
+              value: "true"
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: acc-facturatieservice
+  namespace: kargo-promotion
+  annotations:
+    kargo.akuity.io/color: violet
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: facturatieservice
+      sources:
+        stages:
+          - tst-facturatieservice
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: promote
+          vars:
+            - name: openpr
+              value: "true"
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prd-facturatieservice
+  namespace: kargo-promotion
+  annotations:
+    kargo.akuity.io/color: black
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: facturatieservice
+      sources:
+        stages:
+          - acc-facturatieservice
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: promote
+          vars:
+            - name: openpr
+              value: "true"

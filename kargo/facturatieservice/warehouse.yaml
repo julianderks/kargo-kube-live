@@ -1,0 +1,18 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: facturatieservice
+  namespace: kargo-promotion
+spec:
+  subscriptions:
+    # - image:
+    #     repoURL: europe-west4-docker.pkg.dev/shared-9456/sng/facturatieservice
+    #     imageSelectionStrategy: SemVer
+    #     allowTags: ^v?[0-9]+\.[0-9]+\.[0-9]+([\+-].*)?$
+    - git:
+        repoURL: https://github.com/julianderks/facturatieservice-kube-live.git
+        commitSelectionStrategy: NewestFromBranch
+        branch: main
+        includePaths:
+          - base/
+          - overlays/
