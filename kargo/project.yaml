@@ -15,13 +15,17 @@ spec:
   promotionPolicies:
     - stageSelector:
         # Apply to all stages matching a regex pattern
-        name: "glob:dev"
+        name: "glob:dev-*"
       autoPromotionEnabled: true
     - stageSelector:
         # Apply to all stages matching a glob pattern
-        name: "glob:staging"
-      autoPromotionEnabled: false
+        name: "glob:tst-*"
+      autoPromotionEnabled: true
     - stageSelector:
         # Apply to all stages matching a glob pattern
-        name: "glob:prod"
+        name: "glob:acc-*"
+      autoPromotionEnabled: true
+    - stageSelector:
+        # Apply to all stages matching a glob pattern
+        name: "glob:prd-*"
       autoPromotionEnabled: false

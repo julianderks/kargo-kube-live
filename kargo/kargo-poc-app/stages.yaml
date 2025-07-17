@@ -1,7 +1,7 @@
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
-  name: dev
+  name: dev-kargo-poc-app
   namespace: kargo-promotion
   annotations:
     kargo.akuity.io/color: red
@@ -9,7 +9,7 @@ spec:
   requestedFreight:
     - origin:
         kind: Warehouse
-        name: guestbook
+        name: kargo-poc-app
       sources:
         direct: true
   promotionTemplate:
@@ -17,12 +17,11 @@ spec:
       steps:
         - task:
             name: promote
-
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
-  name: staging
+  name: tst-kargo-poc-app
   namespace: kargo-promotion
   annotations:
     kargo.akuity.io/color: amber
@@ -30,20 +29,23 @@ spec:
   requestedFreight:
     - origin:
         kind: Warehouse
-        name: guestbook
+        name: kargo-poc-app
       sources:
         stages:
-          - dev
+          - dev-kargo-poc-app
   promotionTemplate:
     spec:
       steps:
         - task:
             name: promote
+          vars:
+            - name: openpr
+              value: "true"
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
-  name: prod
+  name: acc-kargo-poc-app
   namespace: kargo-promotion
   annotations:
     kargo.akuity.io/color: violet
@@ -51,10 +53,34 @@ spec:
   requestedFreight:
     - origin:
         kind: Warehouse
-        name: guestbook
+        name: kargo-poc-app
       sources:
         stages:
-          - staging
+          - tst-kargo-poc-app
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: promote
+          vars:
+            - name: openpr
+              value: "true"
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prd-kargo-poc-app
+  namespace: kargo-promotion
+  annotations:
+    kargo.akuity.io/color: black
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: kargo-poc-app
+      sources:
+        stages:
+          - acc-kargo-poc-app
   promotionTemplate:
     spec:
       steps:

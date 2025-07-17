@@ -1,18 +1,18 @@
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
 metadata:
-  name: guestbook
+  name: kargo-poc-app
   namespace: kargo-promotion
 spec:
-  interval: 5m0s
   subscriptions:
     # - image:
-    #     repoURL: europe-west4-docker.pkg.dev/shared-9456/sng/guestbook
+    #     repoURL: europe-west4-docker.pkg.dev/shared-9456/sng/kargo-poc-app
     #     imageSelectionStrategy: SemVer
     #     allowTags: ^v?[0-9]+\.[0-9]+\.[0-9]+([\+-].*)?$
     - git:
-        repoURL: https://github.com/julianderks/kargo-poc.git
+        repoURL: https://github.com/julianderks/kargo-poc-app-kube-live.git
         commitSelectionStrategy: NewestFromBranch
         branch: main
         includePaths:
-          - kustomize/guestbook
+          - base/
+          - overlays/

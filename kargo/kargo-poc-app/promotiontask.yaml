@@ -10,9 +10,9 @@ spec:
     - name: branch
       value: main
     - name: image
-      value: europe-west4-docker.pkg.dev/shared-9456/sng/guestbook
+      value: europe-west4-docker.pkg.dev/shared-9456/sng/gitops-source-app
     - name: app
-      value: guestbook
+      value: gitops-source-app
   steps:
     # Clone the Git repository that contains the Kustomize configuration
     # to the ./src directory, and the environment configuration to ./out.
@@ -92,7 +92,7 @@ spec:
     - uses: argocd-update
       config:
         apps:
-          - name: guestbook-${{ ctx.stage }}
+          - name: gitops-source-app-${{ ctx.stage }}
             sources:
               - repoURL: ${{ vars.repoURL }}
                 desiredRevision: ${{ task.outputs['commit'].commit }}
