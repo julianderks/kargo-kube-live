@@ -38,7 +38,7 @@ spec:
     # - uses: kustomize-set-image
     #   as: update-image
     #   config:
-    #     path: ./src/kustomize/${{ vars.app }}/overlays/${{ vars.env }}
+    #     path: ./src/kustomize/${{ vars.app }}/./src/overlays/${{ vars.env }}
     #     images:
     #       - image: ${{ vars.image }}
     #         tag: ${{ imageFrom(vars.image).Tag}}
@@ -46,7 +46,7 @@ spec:
     # overlay to the ./out directory.
     - uses: kustomize-build
       config:
-        path: overlays/${{ vars.env }}
+        path: ./src/overlays/${{ vars.env }}
         outPath: ./out
     # Commit the changes to the Git repository.
     - uses: git-commit
