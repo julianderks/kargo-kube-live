@@ -11,8 +11,6 @@ spec:
       value: main
     - name: image
       value: europe-west4-docker.pkg.dev/shared-9456/sng/gitops-source-app
-    - name: app
-      value: gitops-source-app
   steps:
     # Clone the Git repository that contains the Kustomize configuration
     # to the ./src directory, and the environment configuration to ./out.
@@ -46,7 +44,7 @@ spec:
     # overlay to the ./out directory.
     - uses: kustomize-build
       config:
-        path: ./src/kustomize/${{ vars.app }}/overlays/${{ ctx.stage }}
+        path: overlays/${{ ctx.stage }}
         outPath: ./out
     # Commit the changes to the Git repository.
     - uses: git-commit
@@ -87,12 +85,12 @@ spec:
         repoURL: ${{ vars.repoURL }}
         prNumber: ${{ task.outputs['open-pr'].prNumber }}
 
-    # Request a sync of the ArgoCD Application to apply the changes from the
-    # commit.
-    - uses: argocd-update
-      config:
-        apps:
-          - name: gitops-source-app-${{ ctx.stage }}
-            sources:
-              - repoURL: ${{ vars.repoURL }}
-                desiredRevision: ${{ task.outputs['commit'].commit }}
+    # # Request a sync of the ArgoCD Application to apply the changes from the
+    # # commit.
+    # - uses: argocd-update
+    #   config:
+    #     apps:
+    #       - name: gitops-source-app-${{ ctx.stage }}
+    #         sources:
+    #           - repoURL: ${{ vars.repoURL }}
+    #             desiredRevision: ${{ task.outputs['commit'].commit }}
