@@ -11,6 +11,8 @@ spec:
       value: main
     - name: image
       value: europe-west4-docker.pkg.dev/shared-9456/sng/gitops-source-app
+    - name: env
+      value: dev
   steps:
     # Clone the Git repository that contains the Kustomize configuration
     # to the ./src directory, and the environment configuration to ./out.
@@ -20,7 +22,7 @@ spec:
         checkout:
           - commit: ${{ commitFrom(vars.repoURL).ID }}
             path: ./src
-          - branch: env/${{ ctx.stage }}
+          - branch: env/${{ vars.env }}
             path: ./out
             # Create the branch if it does not exist.
             create: true
@@ -36,7 +38,7 @@ spec:
     # - uses: kustomize-set-image
     #   as: update-image
     #   config:
-    #     path: ./src/kustomize/${{ vars.app }}/overlays/${{ ctx.stage }}
+    #     path: ./src/kustomize/${{ vars.app }}/overlays/${{ vars.env }}
     #     images:
     #       - image: ${{ vars.image }}
     #         tag: ${{ imageFrom(vars.image).Tag}}
@@ -44,14 +46,14 @@ spec:
     # overlay to the ./out directory.
     - uses: kustomize-build
       config:
-        path: overlays/${{ ctx.stage }}
+        path: overlays/${{ vars.env }}
         outPath: ./out
     # Commit the changes to the Git repository.
     - uses: git-commit
       as: commit
       config:
         path: ./out
-        message: update ${{ ctx.stage }}
+        message: update ${{ vars.env }}
         # message: ${{ task.outputs['update-image'].commitMessage }}
 
     # Push the changes to the Git repository.
@@ -75,7 +77,7 @@ spec:
         repoURL: ${{ vars.repoURL }}
         # createTargetBranch: true
         sourceBranch: ${{ task.outputs.push.branch }}
-        targetBranch: env/${{ ctx.stage }}
+        targetBranch: env/${{ vars.env }}
 
     # Wait for the pull request to be merged.
     - uses: git-wait-for-pr
@@ -90,7 +92,7 @@ spec:
     # - uses: argocd-update
     #   config:
     #     apps:
-    #       - name: gitops-source-app-${{ ctx.stage }}
+    #       - name: gitops-source-app-${{ vars.env }}
     #         sources:
     #           - repoURL: ${{ vars.repoURL }}
     #             desiredRevision: ${{ task.outputs['commit'].commit }}
